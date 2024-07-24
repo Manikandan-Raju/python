@@ -6,7 +6,7 @@ for i in range(5):
             print("    Breaking out of the inner loop")
             break
     else:
-        continue
+        continue #skip later statements inside loop
     break
 
 print("Loop execution completed")
