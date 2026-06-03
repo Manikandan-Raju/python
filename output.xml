@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.4.2 (Python 3.12.5 on darwin)" generated="2026-06-04T03:33:30.268262" rpa="false" schemaversion="5">
+<suite id="s1" name="01 Example" source="/Users/manikandanraju/Documents/workspaces.nosync/python/robot_project/tests/01_example.robot">
+<test id="s1-t1" name="Greeting Test" line="10">
+<kw name="Create Greeting" owner="ExampleLibrary">
+<msg time="2026-06-04T03:33:30.291272" level="INFO">${message} = Hello, World!</msg>
+<var>${message}</var>
+<arg>${GREETING}</arg>
+<arg>${NAME}</arg>
+<status status="PASS" start="2026-06-04T03:33:30.291157" elapsed="0.000134"/>
+</kw>
+<kw name="Should Be Equal" owner="BuiltIn">
+<arg>${message}</arg>
+<arg>Hello, World!</arg>
+<doc>Fails if the given objects are unequal.</doc>
+<status status="PASS" start="2026-06-04T03:33:30.291382" elapsed="0.000162"/>
+</kw>
+<doc>Build a greeting using a custom Python keyword.</doc>
+<status status="PASS" start="2026-06-04T03:33:30.290784" elapsed="0.000821"/>
+</test>
+<test id="s1-t2" name="Addition Test" line="15">
+<kw name="Add Numbers" owner="ExampleLibrary">
+<msg time="2026-06-04T03:33:30.291871" level="INFO">${result} = 12</msg>
+<var>${result}</var>
+<arg>7</arg>
+<arg>5</arg>
+<status status="PASS" start="2026-06-04T03:33:30.291811" elapsed="0.000072"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-06-04T03:33:30.292031" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${result}</arg>
+<arg>12</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-06-04T03:33:30.291934" elapsed="0.000120"/>
+</kw>
+<doc>Verify numeric addition using a Python keyword.</doc>
+<status status="PASS" start="2026-06-04T03:33:30.291687" elapsed="0.000415"/>
+</test>
+<test id="s1-t3" name="List Filtering Test" line="20">
+<kw name="Create List" owner="BuiltIn">
+<msg time="2026-06-04T03:33:30.292398" level="INFO">@{items} = [ 1 | 2 | 3 | 4 | 5 ]</msg>
+<var>@{items}</var>
+<arg>1</arg>
+<arg>2</arg>
+<arg>3</arg>
+<arg>4</arg>
+<arg>5</arg>
+<doc>Returns a list containing given items.</doc>
+<status status="PASS" start="2026-06-04T03:33:30.292289" elapsed="0.000119"/>
+</kw>
+<kw name="Filter Even Numbers" owner="ExampleLibrary">
+<msg time="2026-06-04T03:33:30.292511" level="INFO">${evens} = [2, 4]</msg>
+<var>${evens}</var>
+<arg>${items}</arg>
+<status status="PASS" start="2026-06-04T03:33:30.292457" elapsed="0.000063"/>
+</kw>
+<kw name="Length Should Be" owner="BuiltIn">
+<msg time="2026-06-04T03:33:30.292791" level="INFO">Length is 2.</msg>
+<arg>${evens}</arg>
+<arg>2</arg>
+<doc>Verifies that the length of the given item is correct.</doc>
+<status status="PASS" start="2026-06-04T03:33:30.292560" elapsed="0.000249"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-06-04T03:33:30.293124" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${evens[0]}</arg>
+<arg>2</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-06-04T03:33:30.292860" elapsed="0.000286"/>
+</kw>
+<kw name="Should Be Equal As Integers" owner="BuiltIn">
+<msg time="2026-06-04T03:33:30.293412" level="INFO">Argument types are:
+&lt;class 'int'&gt;
+&lt;class 'str'&gt;</msg>
+<arg>${evens[1]}</arg>
+<arg>4</arg>
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<status status="PASS" start="2026-06-04T03:33:30.293193" elapsed="0.000240"/>
+</kw>
+<doc>Show how built-in keywords work with lists.</doc>
+<status status="PASS" start="2026-06-04T03:33:30.292171" elapsed="0.001308"/>
+</test>
+<doc>Simple Robot Framework example using a Python keyword library.</doc>
+<status status="PASS" start="2026-06-04T03:33:30.269285" elapsed="0.024341"/>
+</suite>
+<statistics>
+<total>
+<stat pass="3" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat name="01 Example" id="s1" pass="3" fail="0" skip="0">01 Example</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
