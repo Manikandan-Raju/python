@@ -9,9 +9,9 @@ def fibonacci_generator():
             yield 1
         else:
             yield last1 + last2
-            new2 = last1 + last2
+            new = last1 + last2
             last1 = last2
-            last2 = new2
+            last2 = new
         i += 1
         
 
