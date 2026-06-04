@@ -1,6 +1,9 @@
 import pytest
 import calculator
-from calculator import add, divide, multiply, subtract
+from pathlib import Path
+from typing import Any, Dict, Tuple
+from unittest.mock import MagicMock
+from calculator import add, divide, multiply, subtract, some
 
 
 @pytest.mark.parametrize(
@@ -12,7 +15,7 @@ from calculator import add, divide, multiply, subtract
     ],
     ids=["positive", "negative", "large"],
 )
-def test_add_with_parametrization(a, b, expected):
+def test_add_with_parametrization(a: int, b: int, expected: int) -> None:
     """
     Demonstrate parameterized pytest tests with custom ids.
     
@@ -31,7 +34,7 @@ def test_add_with_parametrization(a, b, expected):
     assert add(a, b) == expected
 
 
-def test_subtract_and_multiply(calculator_functions):
+def test_subtract_and_multiply(calculator_functions: Dict[str, Any]) -> None:
     """Use a dictionary fixture to share calculator functions."""
     assert calculator_functions["subtract"](5, 2) == 3
     assert calculator_functions["multiply"](5, 2) == 10
@@ -45,7 +48,7 @@ def test_subtract_and_multiply(calculator_functions):
     ],
     ids=["even-division", "odd-division"],
 )
-def test_divide_with_parametrization(a, b, expected):
+def test_divide_with_parametrization(a: float, b: float, expected: float) -> None:
     assert divide(a, b) == expected
 
 
@@ -55,13 +58,21 @@ def test_divide_raises_value_error():
         divide(10, 0)
 
 
-def test_monkeypatch_add(monkeypatch):
+def test_monkeypatch_add(monkeypatch: pytest.MonkeyPatch) -> None:
     """Show how to monkeypatch a module function in pytest."""
     monkeypatch.setattr(calculator, "add", lambda a, b: 999)
     assert calculator.add(1, 2) == 999
 
 
-def test_write_results_to_tmp_path(tmp_path):
+def test_monkeypatch_some(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Demonstrate monkeypatching an internal function used by another function."""
+    monkeypatch.setattr(calculator, "add", lambda a, b: 42)
+
+    # calculator.some currently uses calculator.add() internally.
+    assert calculator.some(1, 2) == 42
+
+
+def test_write_results_to_tmp_path(tmp_path: Path) -> None:
     """
     Demonstrate tmp_path fixture for temporary file creation.
     
@@ -93,7 +104,7 @@ def test_write_results_to_tmp_path(tmp_path):
     assert output_file.read_text() == "result=15"
 
 
-def test_capture_printed_output(capfd):
+def test_capture_printed_output(capfd: pytest.CaptureFixture[str]) -> None:
     """Demonstrate capturing stdout/stderr output."""
     print(add(1, 2))
     captured = capfd.readouterr()
@@ -115,7 +126,68 @@ def test_slow_math_operation():
     assert multiply(7, 6) == 42
 
 
-def test_sample_numbers_fixture(sample_numbers):
+def test_sample_numbers_fixture(sample_numbers: Tuple[int, int, int]) -> None:
     """Use a parametrized fixture defined in conftest.py."""
     a, b, expected = sample_numbers
     assert add(a, b) == expected
+
+
+def test_mock(mocker: Any) -> None:
+    """Use the pytest-mock plugin's mocker fixture."""
+    mock_add = mocker.patch("calculator.add", return_value=42)
+    result = some(1, 2)  # some() calls add() internally
+    # Check exactly one call
+    mock_add.assert_called_once_with(1, 2)
+    assert some(1,2) == 42
+
+
+def test_magic_mock() -> None:
+    """Demonstrate unittest.mock.MagicMock for a calculator-style object.
+
+    MagicMock creates a fake object whose methods can be configured and inspected.
+    This differs from monkeypatch, which replaces real module attributes in-place.
+    """
+    magic_calc = MagicMock(name="magic_calc")
+    magic_calc.add.return_value = 10
+    magic_calc.subtract.return_value = -1
+    magic_calc.multiply.return_value = 2
+    magic_calc.divide.return_value = 0.5
+
+    result = (
+        magic_calc.add(1, 2)
+        + magic_calc.subtract(1, 2)
+        + magic_calc.multiply(1, 2)
+        + magic_calc.divide(1, 2)
+    )
+
+    assert result == 11.5
+    magic_calc.add.assert_called_once_with(1, 2)
+    assert magic_calc.subtract.call_count == 1
+
+
+def test_pytest_magic_mock(mocker: Any) -> None:
+    m = mocker.MagicMock(name="magic_calc")
+    m.add.return_value = 10
+    assert m.add(1, 2) == 10
+
+    # `m` is a standalone MagicMock object, so calling `some()` still uses
+    # the real calculator.add() function unless that function is patched.
+    mocker.patch("calculator.add", return_value=999)
+
+    assert some(1, 2) == 999
+
+
+@pytest.fixture(params=[(1, 2, 3), (2, 3, 5), (3, 4, 7)])
+def some_fixture(request: pytest.FixtureRequest) -> Tuple[int, int, int]:
+
+    return request.param
+
+def test_some_fixture(some_fixture: Tuple[int, int, int]) -> None:
+    a,b, expected = some_fixture
+    assert add(a,b) == expected
+
+
+@pytest.mark.parametrize("a,b,expected", [(1,2,3),(2,3,5),(3,4,7)], ids=["case1","case2","case3"])
+def test_some_parametrize(a: int, b: int, expected: int) -> None:
+    assert add(a,b) == expected
+    
